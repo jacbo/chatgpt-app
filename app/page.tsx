@@ -3,9 +3,8 @@ import Main from "@/components/home/Main";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Navigation />
-      <Main />
+    <main className="bg-yellow-500 p-10">
+     <p>hello</p>
     </main>
   )
 }
