@@ -1,3 +1,4 @@
+import AppContextProvider from '@/components/AppContext'
 import './globals.css'
 
 export const metadata = {
@@ -12,7 +13,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh">
-      <body className="">{children}</body>
+      <body className="dark">
+        <AppContextProvider>
+          {children}
+        </AppContextProvider>
+      </body>
     </html>
   )
 }
