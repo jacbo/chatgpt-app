@@ -1,14 +1,16 @@
 "use client"
 
-import {Dispatch, ReactNode, SetStateAction, createContext, useContext, useMemo, useState} from "react"
+import { Action, initState, reducer } from "@/reducers/AppReducer";
+import {Dispatch, ReactNode, createContext, useContext, useMemo, useReducer, useState} from "react"
 
 type State = {
   displayNavigation: boolean;
+  themeMode: "dark" | "light";
 }
 
 type AppContextProps = {
   state: State;
-  setState: Dispatch<React.SetStateAction<State>>;
+  dispatch: Dispatch<Action>;
 }
 
 const AppContext = createContext<AppContextProps>(null!);
@@ -18,11 +20,17 @@ export function useAppContext(){
 }
 
 export default function AppContextProvider({children}:{children: ReactNode}){
-    const [state, setState] = useState<State>({
-        displayNavigation: true,
-    })
-    const contextValue = useMemo(() => ({state, setState}), [state,setState]);
+    const [state, dispatch] = useReducer(reducer,initState)
+    const contextValue = useMemo(() => ({state, dispatch}), [state,dispatch]);
     return (
         <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
     )
 }
+
+// export function updateDisplayNavigation(displayNavigation: boolean) {
+//   dispatch({
+//     type: ActionType.UPDATE,
+//     field: "displayNavigation",
+//     value: displayNavigation,
+//   });
+// }

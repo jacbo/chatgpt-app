@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh">
-      <body className="dark">
+      <body className="">
         <AppContextProvider>
           {children}
         </AppContextProvider>

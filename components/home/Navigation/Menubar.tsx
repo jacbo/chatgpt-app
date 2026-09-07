@@ -1,12 +1,13 @@
 import { useAppContext } from "@/components/AppContext";
 import Button from "@/components/common/Button";
+import { ActionType } from "@/reducers/AppReducer";
 import { HiPlus } from "react-icons/hi";
 import { LuPanelLeft } from "react-icons/lu";
 
 export default function Menubar() {
 
     const {
-        setState
+        dispatch
     } = useAppContext()
 
     return <div className="flex space-x-3">
@@ -20,7 +21,7 @@ export default function Menubar() {
         <Button
         icon={LuPanelLeft}
         variant="outline"
-        onClick={() => setState(v => ({...v, displayNavigation: false}))}
+        onClick={() =>  dispatch({type: ActionType.UPDATE, field: "displayNavigation", value: false})}
         />
     </div>
 }

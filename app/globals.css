@@ -6,6 +6,36 @@ html,body {
   height: 100%;
 }
 
-  .hidden {
-    display: none;
-  }
+.hidden {
+  display: none;
+}
+
+/* 优雅细腻的滚动条样式 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.45) transparent;
+}
+
+/* Chrome、Edge、Safari */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.35);
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(209, 213, 219, 0.7);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: rgba(229, 231, 235, 0.85);
+}
