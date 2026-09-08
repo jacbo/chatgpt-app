@@ -1,12 +1,7 @@
 "use client"
 
-import { Action, initState, reducer } from "@/reducers/AppReducer";
+import { Action, initState, reducer,State } from "@/reducers/AppReducer";
 import {Dispatch, ReactNode, createContext, useContext, useMemo, useReducer, useState} from "react"
-
-type State = {
-  displayNavigation: boolean;
-  themeMode: "dark" | "light";
-}
 
 type AppContextProps = {
   state: State;
@@ -26,11 +21,3 @@ export default function AppContextProvider({children}:{children: ReactNode}){
         <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
     )
 }
-
-// export function updateDisplayNavigation(displayNavigation: boolean) {
-//   dispatch({
-//     type: ActionType.UPDATE,
-//     field: "displayNavigation",
-//     value: displayNavigation,
-//   });
-// }

@@ -3,7 +3,7 @@ import { IconType } from "react-icons";
 
 type ButtonProps = {
     icon?: IconType
-    variant?: "default" | "outline" | "text"
+    variant?: "default" | "outline" | "text" | "primary"
 } & ComponentPropsWithoutRef<'button'>
 
 export default function Button({children, className="", icon:Icon,variant="default", ...props}:ButtonProps) {
@@ -14,6 +14,8 @@ export default function Button({children, className="", icon:Icon,variant="defau
     localClassName = "border border-gray-300 dark:border-gray-600 text-black dark:text-gray-300 bg-gray-50 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
   } else if(variant === "text") {
     localClassName = "text-black dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700"
+  } else if(variant === "primary") {
+    localClassName = "bg-[#00b981] text-white hover:bg-[#059669]"
   }
   return (
     <button className={`  inline-flex ${className} items-center min-w-[38px] min-h-[38px] rounded px-3 py-1.5

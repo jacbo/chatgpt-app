@@ -3,3 +3,9 @@ export interface Chat {
   name: string;
   updateTime: number;
 }
+
+export interface Message {
+  id: string;
+  role: "system" | "user" | "assistant";
+  content: string;
+}
