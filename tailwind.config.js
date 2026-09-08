@@ -10,5 +10,7 @@ module.exports = {
     extend: {
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'), // 引入 prose 排版类
+  ],
 }
