@@ -1,10 +1,14 @@
+import { useAppContext } from "@/components/AppContext";
 import Button from "@/components/common/Button";
 import Markdown from "@/components/common/Markdown";
-import messageList from "@/data/messages.json";
+// import messageList from "@/data/messages.json";
 import { useState } from "react";
 import { PiRobotFill } from "react-icons/pi";
 
 export default function MessageList() {
+
+    const {state:{messageList,streamingId}} = useAppContext();
+
     return <div className="w-full pt-10 pb-48 dark:text-gray-300">
         <ul>
             {
@@ -16,7 +20,9 @@ export default function MessageList() {
                                 {message.role==="user" ? "🙂":<PiRobotFill className="text-gray-900"/>}
                             </div>
                             <div className="">
-                                <Markdown className={`border-0 rounded-lg bg-[#d8d5d5] dark:bg-[#d8d5d5]`}>{message.content}</Markdown>
+                                <Markdown className={`border-0 rounded-lg bg-[#d8d5d5] dark:bg-gray-700`}>{`${message.content}${
+                                    streamingId === message.id ? "▎" : ""
+                                }`}</Markdown>
                             </div>
                         </div>
                     </li>

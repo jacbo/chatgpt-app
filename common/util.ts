@@ -21,3 +21,7 @@ export function groupByDate(chatList: Chat[]) :[string,Chat[]][] {
     })
     return [['今天',today], ['最近七天',sevenDays], ['最近一个月',month], ['更早',early]];
 }
+
+export async function sleep(ms: number){
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

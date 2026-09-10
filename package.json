@@ -23,11 +23,13 @@
     "react-textarea-autosize": "^8.5.9",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
+    "@types/uuid": "^10.0.0",
     "tailwindcss": "^4.3.3"
   }
 }

@@ -1,11 +1,95 @@
+import { useAppContext } from "@/components/AppContext";
 import Button from "@/components/common/Button";
 import moment from "moment";
+import { Message, MessageRequestBody } from "@/types/chat";
+import { useState } from "react";
 import { FiSend } from "react-icons/fi";
 import { MdRefresh } from "react-icons/md";
 import { PiLightningFill } from "react-icons/pi";
 import TextareaAutoSize from "react-textarea-autosize"
+import {v4 as uuidv4} from "uuid"
+import { ActionType } from "@/reducers/AppReducer";
+
+const decoder = new TextDecoder()
 
 export default function ChatInput(){
+
+    const [messageText,setMessageText] = useState("")
+    
+    const {state:{messageList,currentModel},dispatch} = useAppContext()
+    async function send(){
+
+        const message: Message = {
+            id: uuidv4(),
+            role: "user",
+            content: messageText
+        }
+
+        const messages = [...messageList,message]
+
+        
+        dispatch({
+            type: ActionType.ADD_MESSAGE,
+            message
+        })
+        setMessageText("")
+        
+        const body: MessageRequestBody = {messages,model:currentModel}
+        const response = await fetch("/api/chat",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            },
+            body: JSON.stringify(body)
+        })
+        if(!response.ok){
+            console.log(response.statusText)
+            return
+        }
+
+        if(!response.body){
+            console.log('body error')
+            return
+        }
+
+        const responseMessage: Message = {
+            id: uuidv4(),
+            role: "assistant",
+            content: ""
+        }
+
+        dispatch({
+            type: ActionType.ADD_MESSAGE,
+            message: responseMessage
+        })
+
+        dispatch({
+            type: ActionType.UPDATE,
+            field: "streamingId",
+            value: responseMessage.id
+        })
+
+        const reader = response.body.getReader()
+        let content = ""
+        let done = false;
+        while(!done){
+            const result = await reader.read()
+            done = result.done
+            const chunk = decoder.decode(result.value,{stream:true})
+            console.log(chunk)
+            content += chunk
+            dispatch({
+                type: ActionType.UPDATE_MESSAGE,
+                message: {...responseMessage,content}
+            })
+        }
+        dispatch({
+            type: ActionType.UPDATE,
+            field: "streamingId",
+            value: ""
+        })
+        
+    }
 
     return <div className="absolute bottom-0 inset-x-0 bg-gradient-to-b from-[rgba(255,255,255,0)] from-[13.94%] to-[#fff] to-[54.73%] pt-10 px-2
      dark:from-[rgba(53,55,64,0)] dark:to-[#353740] dark:to-[58.85%]">
@@ -19,9 +103,14 @@ export default function ChatInput(){
             <TextareaAutoSize 
                 className="outline-none flex-1 max-h-64 mb-1.5 bg-transparent text-black dark:tex-white resize-none border-0"
                 placeholder="请输入消息..."
+                onChange={(e)=>{
+                    setMessageText(e.target.value)
+                }}
+                value={messageText}
                 rows={1}
             />
             <Button 
+                onClick={send}
                 className="mx-3 !rounded-lg"
                 icon={FiSend} variant="primary"></Button>
         </div>
