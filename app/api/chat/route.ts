@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
             for(let i = 0; i < messageText.length; i++){
                 await sleep(50)
                 controller.enqueue(encoder.encode(messageText[i]))
+                console.log(messageText[i])
             }
             controller.close()
         }

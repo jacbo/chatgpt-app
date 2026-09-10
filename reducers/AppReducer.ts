@@ -11,11 +11,12 @@ export type State = {
 export enum ActionType {
   UPDATE = "UPDATE",
   ADD_MESSAGE = "ADD_MESSAGE",
-  UPDATE_MESSAGE = "UPDATE_MESSAGE"
+  UPDATE_MESSAGE = "UPDATE_MESSAGE",
+  REMOVE_MESSAGE = "REMOVE_MESSAGE",
 }
 
 type MessageAction = {
-  type: ActionType.ADD_MESSAGE|ActionType.UPDATE_MESSAGE;
+  type: ActionType.ADD_MESSAGE|ActionType.UPDATE_MESSAGE|ActionType.REMOVE_MESSAGE;
   message: Message;
 }
 
@@ -31,7 +32,8 @@ export const initState: State = {
   displayNavigation: true,
   themeMode: "dark",
   currentModel: "gpt-3.5-turbo",
-  messageList: []
+  messageList: [],
+  streamingId: ""
 }
 
 export function reducer(state: State, action: Action): State { 
@@ -44,6 +46,9 @@ export function reducer(state: State, action: Action): State {
       }
       case ActionType.UPDATE_MESSAGE: {
         return {...state, messageList: state.messageList.map(message => message.id === action.message.id ? action.message : message)}
+      }
+      case ActionType.REMOVE_MESSAGE: {
+        return {...state, messageList: state.messageList.filter(message => message.id !== action.message.id)}
       }
       default: {
         throw new Error(`Unhandled action type: ${action.type}`)

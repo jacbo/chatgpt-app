@@ -15,10 +15,10 @@ export default function Button({children, className="", icon:Icon,variant="defau
   } else if(variant === "text") {
     localClassName = "text-black dark:text-gray-300 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700"
   } else if(variant === "primary") {
-    localClassName = "bg-[#00b981] text-white hover:bg-[#059669]"
+    localClassName = "bg-[#00b981] text-white hover:bg-[#059669] disabled:shadow-none disabled:bg-transparent disabled:text-gray-300 dark:disabled:text-gray-600"
   }
   return (
-    <button className={`  inline-flex ${className} items-center min-w-[38px] min-h-[38px] rounded px-3 py-1.5
+    <button className={`transition-colors inline-flex ${className} items-center min-w-[38px] min-h-[38px] rounded px-3 py-1.5
       ${localClassName}`}
     {...props}>
       {Icon && <Icon className={`text-lg ${children ? "mr-2" : ""}`} />}
