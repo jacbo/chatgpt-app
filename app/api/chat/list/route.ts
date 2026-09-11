@@ -1,0 +1,16 @@
+import { sleep } from "@/common/util";
+import prisma from "@/lib/prisma";
+import { NextRequest,NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const pageParam = await request.nextUrl.searchParams.get("page")
+  const page = pageParam ? parseInt(pageParam) : 1
+  const list = await prisma.chat.findMany({
+    skip: (page - 1) * 10,
+    take: 20,
+    orderBy: {
+      updateTime: "desc"
+    }
+  })
+  return NextResponse.json({code: 0, data: {list}})
+}

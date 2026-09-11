@@ -1,4 +1,5 @@
 import AppContextProvider from '@/components/AppContext'
+import EventBusContextProvider from '@/components/EventBusContext'
 import '@/styles/globals.css'
 
 export const metadata = {
@@ -15,7 +16,9 @@ export default function RootLayout({
     <html lang="zh">
       <body className="">
         <AppContextProvider>
-          {children}
+          <EventBusContextProvider>
+            {children}
+          </EventBusContextProvider>
         </AppContextProvider>
       </body>
     </html>

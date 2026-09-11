@@ -1,4 +1,4 @@
-import { Message } from "@/types/chat";
+import { Chat, Message } from "@/types/chat";
 
 export type State = {
   displayNavigation: boolean;
@@ -6,6 +6,7 @@ export type State = {
   currentModel: string;
   messageList: Message[];
   streamingId?: string | null;
+  selectedChat: Chat | null;
 }
 
 export enum ActionType {
@@ -33,7 +34,8 @@ export const initState: State = {
   themeMode: "dark",
   currentModel: "gpt-3.5-turbo",
   messageList: [],
-  streamingId: ""
+  streamingId: "",
+  selectedChat: null
 }
 
 export function reducer(state: State, action: Action): State { 

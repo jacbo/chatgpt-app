@@ -30,10 +30,10 @@ export default function ChatItem({ item, selected, onSelect }: Props) {
         </div>
 
         {editing ? (
-            <input className="flex-1 min-w-0 bg-transparent outline-none" autoFocus={true} defaultValue={item.name} />
+            <input className="flex-1 min-w-0 bg-transparent outline-none" autoFocus={true} defaultValue={item.title} />
         ):(
             <div className="relative flex-1 whitespace-nowrap overflow-hidden">
-                {item.name}
+                {item.title}
                 <span className={`absolute right-0 inset-y-0 w-8 bg-gradient-to-l group-hover:from-gray-800
                                                             ${selected ? " from-gray-800" : "from-gray-900"}
                                                             `}></span>

@@ -1,13 +1,31 @@
 import { useAppContext } from "@/components/AppContext";
 import Button from "@/components/common/Button";
 import Markdown from "@/components/common/Markdown";
+import { ActionType } from "@/reducers/AppReducer";
 // import messageList from "@/data/messages.json";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PiRobotFill } from "react-icons/pi";
+
+
+async function fetchMessageList(chatId:string) {
+    const response = await fetch("/api/message/list?chatId="+chatId)
+    if(!response.ok)
+        throw new Error(response.statusText)
+    const {data} = await response.json()
+    return data.list
+}
 
 export default function MessageList() {
 
-    const {state:{messageList,streamingId}} = useAppContext();
+    const {state:{messageList,streamingId,selectedChat},dispatch} = useAppContext();
+
+    useEffect(()=>{ 
+        if(selectedChat){
+            fetchMessageList(selectedChat.id).then(list=>dispatch({type:ActionType.UPDATE,field:"messageList",value:list}))
+        }else{
+            dispatch({type:ActionType.UPDATE,field:"messageList",value:[]})
+        }
+    },[selectedChat])
 
     return <div className="w-full pt-10 pb-48 dark:text-gray-300">
         <ul>

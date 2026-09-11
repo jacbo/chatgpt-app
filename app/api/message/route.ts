@@ -11,6 +11,15 @@ export async function POST(request: NextRequest){
             }
         })
         data.chatId = chat.id
+    }else{
+        await prisma.chat.update({
+            where:{
+                id: data.chatId
+            },
+            data:{
+                updateTime: new Date()
+            }
+        })
     }
     let message
     if(id){

@@ -1,3 +1,4 @@
+"use client"
 import { useAppContext } from "@/components/AppContext";
 import Button from "@/components/common/Button";
 import moment from "moment";
@@ -9,6 +10,7 @@ import { PiLightningFill, PiStopBold } from "react-icons/pi";
 import TextareaAutoSize from "react-textarea-autosize"
 import {v4 as uuidv4} from "uuid"
 import { ActionType } from "@/reducers/AppReducer";
+import { useEventBusContext } from "@/components/EventBusContext";
 
 const decoder = new TextDecoder()
 
@@ -17,6 +19,8 @@ export default function ChatInput(){
     const [messageText,setMessageText] = useState("")
     
     const {state:{messageList,currentModel,streamingId},dispatch} = useAppContext()
+
+    const {publish} = useEventBusContext()
 
     const stopRef = useRef(false);
 
@@ -65,6 +69,7 @@ export default function ChatInput(){
 
         if(!chatIdRef.current){
             chatIdRef.current = message.chatId
+            publish('fetchChatList')
         }
 
         const messages = [...messageList,message]

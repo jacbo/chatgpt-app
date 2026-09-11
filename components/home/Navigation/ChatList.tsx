@@ -1,170 +1,58 @@
 import { groupByDate } from "@/common/util"
 import { Chat } from "@/types/chat"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { PiChatBold } from "react-icons/pi"
 import ChatItem from "./ChatItem"
+import { useEventBusContext } from "@/components/EventBusContext"
+import { useAppContext } from "@/components/AppContext"
+import { ActionType } from "@/reducers/AppReducer"
+
+
+async function fetchChatList(page:number) {
+    const response = await fetch("/api/chat/list?page="+page)
+    if(!response.ok)
+        throw new Error(response.statusText)
+    const {data} = await response.json()
+    return data.list
+}
 
 export default function ChatList() {
 
-    const [chatList, setChatList] = useState<Chat[]>([
-        {
-            id: "1",
-            name: "React 入门实战教程",
-            updateTime: Date.now()
-        },
-        {
-            id: "2",
-            name: "如何使用Next.js创建React项目",
-            updateTime: Date.now() -1000*60*60*24
-        },
-        {
-            id: "3",
-            name: "执行小课",
-            updateTime: Date.now()-1000*60*60*24*180
-        },
-        {
-            id: "4",
-            name: "React 官方文档",
-            updateTime: Date.now()-1000*60*60*24*180
-        },
-        {
-            id: "5",
-            name: "React 官方文档",
-            updateTime: Date.now()-1000*60*60*24*180
-        },
-        {
-            id: "6",
-            name: "React 官方文档",
-            updateTime: Date.now()-1000*60*60*24*180
-        },
-        {
-            id: "7",
-            name: "React 官方文档",
-            updateTime: Date.now()-1000*60*60*24*18
-        },
-        {
-            id: "8",
-            name: "React 官方文档",
-            updateTime: Date.now()-1000*60*60*24*18
-        },
-        {
-            id: "9",
-            name: "TypeScript 类型体操入门",
-            updateTime: Date.now()-1000*60*60*24*7
-        },
-        {
-            id: "10",
-            name: "Tailwind CSS 实用技巧",
-            updateTime: Date.now()-1000*60*60*24*6
-        },
-        {
-            id: "11",
-            name: "Node.js 接口开发实践",
-            updateTime: Date.now()-1000*60*60*24*5
-        },
-        {
-            id: "12",
-            name: "数据库设计与优化",
-            updateTime: Date.now()-1000*60*60*24*4
-        },
-        {
-            id: "13",
-            name: "Next.js 服务端渲染",
-            updateTime: Date.now()-1000*60*60*24*3
-        },
-        {
-            id: "14",
-            name: "前端性能优化指南",
-            updateTime: Date.now()-1000*60*60*24*2
-        },
-        {
-            id: "15",
-            name: "JavaScript 异步编程",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "16",
-            name: "CSS 布局基础",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "17",
-            name: "Git 工作流与协作",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "18",
-            name: "RESTful API 设计",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "19",
-            name: "React Hooks 深入理解",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "20",
-            name: "组件化开发实践",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "21",
-            name: "Web 安全基础知识",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "22",
-            name: "Docker 入门教程",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "23",
-            name: "前端工程化配置",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "24",
-            name: "Markdown 编辑器开发",
-            updateTime: Date.now()-1000*60*60*24*9
-        },
-        {
-            id: "25",
-            name: "响应式设计案例",
-            updateTime: Date.now()-1000*60*30*24*9
-        },
-        {
-            id: "26",
-            name: "状态管理方案对比",
-            updateTime: Date.now()-1000*60*20
-        },
-        {
-            id: "27",
-            name: "单元测试实战",
-            updateTime: Date.now()-1000*60*15*24*9
-        },
-        {
-            id: "28",
-            name: "前端面试题整理",
-            updateTime: Date.now()-1000*60*10*24*9
-        },
-        {
-            id: "29",
-            name: "项目部署与上线",
-            updateTime: Date.now()-1000*60*5
-        },
-        {
-            id: "30",
-            name: "个人学习计划",
-            updateTime: Date.now()
-        }
-        
-    ])
+    const [chatList, setChatList] = useState<Chat[]>([])
 
-    const [selectedChat, setSelectedChat] = useState<Chat | null>(chatList[0])
+    const {state:{selectedChat}, dispatch} = useAppContext()
+
+    const pageRef = useRef<number>(1)
+
+    async function loadData(){
+        const list = await fetchChatList(pageRef.current)
+        if(pageRef.current === 1){
+            setChatList(list)
+        }else{
+            setChatList(prev=>[...prev,...list])
+        }
+    }
 
     const groupList = useMemo(()=>{
         return groupByDate(chatList)
     },[chatList])
+
+    const {subscribe,unsubscribe} = useEventBusContext()
+
+    useEffect(()=>{
+        loadData()
+    },[])
+
+    useEffect(()=>{
+        const listener = async ()=>{
+            pageRef.current = 1
+            loadData()
+        }
+        subscribe("fetchChatList",listener)
+        return ()=>{
+            unsubscribe("fetchChatList",listener)
+        }
+    },[])
 
     return (
         <div className="flex-1 mb-[48px] mt-2 flex flex-col overflow-y-auto select-none">
@@ -180,7 +68,7 @@ export default function ChatList() {
                                     list.map(item=>{
                                         let isSelected = selectedChat?.id === item.id
                                         return (<ChatItem key={item.id} item={item} selected={isSelected} onSelect={(chat)=>{
-                                            setSelectedChat(chat)
+                                            dispatch({type:ActionType.UPDATE,field:"selectedChat",value:chat})
                                         }} />)
                                     })
                                 }
