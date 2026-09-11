@@ -8,6 +8,7 @@ export interface Message {
   id: string;
   role: "system" | "user" | "assistant";
   content: string;
+  chatId: string;
 }
 
 export interface MessageRequestBody {

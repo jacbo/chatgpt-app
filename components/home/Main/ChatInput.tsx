@@ -20,12 +20,34 @@ export default function ChatInput(){
 
     const stopRef = useRef(false);
 
-    async function send() {
-        const message: Message = {
-            id: uuidv4(),
-            role: "user",
-            content: messageText
+    async function createOrUpdateMessage(message: Message){
+        const response = await fetch("/api/message/update",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            },
+            body: JSON.stringify(message)
+        })
+        if(!response.ok){
+            console.log(response.statusText)
+            return
         }
+
+        const {data} = await response.json()
+        return data.message;
+    }
+
+    async function send() {
+        let message: Message = {
+            id: "",
+            role: "user",
+            content: messageText,
+            chatId: ""
+        }
+
+        message = await createOrUpdateMessage(message);
+
+
 
         const messages = [...messageList,message]
 
@@ -34,7 +56,7 @@ export default function ChatInput(){
             type: ActionType.ADD_MESSAGE,
             message
         })
-        doSend(messages)
+        await doSend(messages)
     }
 
     async function resend(){
@@ -46,7 +68,7 @@ export default function ChatInput(){
             })
         }
         messages.splice(0,messages.length-1,1)
-        doSend(messages)
+        await doSend(messages)
     }
 
     async function doSend(messages:Message[]){
@@ -77,7 +99,8 @@ export default function ChatInput(){
         const responseMessage: Message = {
             id: uuidv4(),
             role: "assistant",
-            content: ""
+            content: "",
+            chatId: ""
         }
 
         dispatch({
