@@ -20,8 +20,10 @@ export default function ChatInput(){
 
     const stopRef = useRef(false);
 
+    const chatIdRef = useRef("")
+
     async function createOrUpdateMessage(message: Message){
-        const response = await fetch("/api/message/update",{
+        const response = await fetch("/api/message",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
@@ -37,17 +39,33 @@ export default function ChatInput(){
         return data.message;
     }
 
+    async function deleteMessage(id: string) {
+        const response = await fetch("/api/message/delete?id="+id,{
+            method: "DELETE"
+        })
+
+        if(!response.ok){
+            console.log(response.statusText)
+            return
+        }
+
+        const {code} = await response.json()
+        return code === 0
+    }
+
     async function send() {
         let message: Message = {
             id: "",
             role: "user",
             content: messageText,
-            chatId: ""
+            chatId: chatIdRef.current
         }
 
         message = await createOrUpdateMessage(message);
 
-
+        if(!chatIdRef.current){
+            chatIdRef.current = message.chatId
+        }
 
         const messages = [...messageList,message]
 
@@ -62,13 +80,18 @@ export default function ChatInput(){
     async function resend(){
         const messages = [...messageList]
         if(messages.length>0 && messages[messages.length-1].role==="assistant"){
-            dispatch({
-                type: ActionType.REMOVE_MESSAGE,
-                message: messages[messages.length-1]
-            })
+            const deleted = await deleteMessage(messages[messages.length-1].id)
+            if(deleted){
+                dispatch({
+                    type: ActionType.REMOVE_MESSAGE,
+                    message: messages[messages.length-1]
+                })
+                messages.splice(0,messages.length-1,1)
+                await doSend(messages)
+            }else {
+                alert('删除失败')
+            }
         }
-        messages.splice(0,messages.length-1,1)
-        await doSend(messages)
     }
 
     async function doSend(messages:Message[]){
@@ -96,12 +119,12 @@ export default function ChatInput(){
             return
         }
 
-        const responseMessage: Message = {
-            id: uuidv4(),
+        const responseMessage: Message = await createOrUpdateMessage({
+            id: "",
             role: "assistant",
             content: "",
-            chatId: ""
-        }
+            chatId: chatIdRef.current
+        })
 
         dispatch({
             type: ActionType.ADD_MESSAGE,
@@ -133,6 +156,11 @@ export default function ChatInput(){
                 message: {...responseMessage,content}
             })
         }
+
+        await createOrUpdateMessage({
+            ...responseMessage, content
+        })
+
         dispatch({
             type: ActionType.UPDATE,
             field: "streamingId",

@@ -31,3 +31,23 @@ export async function POST(request: NextRequest){
         data: {message}
     })
 }
+
+export async function DELETE(request: NextRequest) { 
+    const searchParams = request.nextUrl.searchParams;
+    const id = searchParams.get('id');
+    if(!id){
+        return NextResponse.json({
+            code: 1,
+            message: 'id is required'
+        })
+    }
+    await prisma.message.delete({
+        where:{
+            id
+        }
+    })
+    return NextResponse.json({
+        code: 0,
+        message: 'success'
+    })
+}
