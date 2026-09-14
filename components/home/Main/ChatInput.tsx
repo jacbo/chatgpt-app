@@ -44,7 +44,7 @@ export default function ChatInput(){
     }
 
     async function deleteMessage(id: string) {
-        const response = await fetch("/api/message/delete?id="+id,{
+        const response = await fetch("/api/message?id="+id,{
             method: "DELETE"
         })
 
