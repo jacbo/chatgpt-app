@@ -4,8 +4,8 @@ import { PiLightningFill, PiShootingStarFill } from "react-icons/pi"
 
 export default function ModelSelect() {
     const models = [
-        { name: "GPT-3.5", id: "gpt-3.5-turbo",icon: PiLightningFill },
-        { name: "GPT-4", id: "gpt-4",icon: PiShootingStarFill }
+        { name: "GPT-4o", id: "inclusionai/ling-3.0-flash-vl:free",icon: PiLightningFill },
+        { name: "GPT-5.4", id: "inclusionai/ling-3.0-flash-vl:free",icon: PiShootingStarFill }
     ]
 
     const { state:{currentModel},dispatch} = useAppContext()

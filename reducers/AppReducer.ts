@@ -32,7 +32,7 @@ export type Action = UpdateAction|MessageAction;
 export const initState: State = {
   displayNavigation: true,
   themeMode: "dark",
-  currentModel: "gpt-3.5-turbo",
+  currentModel: "inclusionai/ling-3.0-flash-vl:free",
   messageList: [],
   streamingId: "",
   selectedChat: null
