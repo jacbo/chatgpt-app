@@ -18,13 +18,11 @@ export default function ChatInput(){
 
     const [messageText,setMessageText] = useState("")
     
-    const {state:{messageList,currentModel,streamingId},dispatch} = useAppContext()
+    const {state:{messageList,currentModel,streamingId,selectedChat},dispatch} = useAppContext()
 
     const {publish,subscribe,unsubscribe} = useEventBusContext()
 
     const stopRef = useRef(false);
-
-    const chatIdRef = useRef("")
 
     useEffect(()=>{
         const listener = (prompt:string)=>{
@@ -72,13 +70,12 @@ export default function ChatInput(){
             id: "",
             role: "user",
             content: messageText,
-            chatId: chatIdRef.current
+            chatId: selectedChat?.id || ""
         }
 
         message = await createOrUpdateMessage(message);
 
-        if(!chatIdRef.current){
-            chatIdRef.current = message.chatId
+        if(!selectedChat?.id){
             dispatch({type:ActionType.UPDATE,field:"selectedChat",value:{id:message.chatId}})
             publish('fetchChatList')
         }
@@ -139,7 +136,7 @@ export default function ChatInput(){
             id: "",
             role: "assistant",
             content: "",
-            chatId: chatIdRef.current
+            chatId: selectedChat?.id || ""
         })
 
         dispatch({
