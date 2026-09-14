@@ -7,7 +7,7 @@ export async function POST(request: NextRequest){
     if(!data.chatId){
         const chat = await prisma.chat.create({
             data:{
-                title: "新对话"
+                title: data.content?.length > 10 ? data.content.substring(0,10) : data.content
             }
         })
         data.chatId = chat.id

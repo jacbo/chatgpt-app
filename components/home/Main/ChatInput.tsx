@@ -3,7 +3,7 @@ import { useAppContext } from "@/components/AppContext";
 import Button from "@/components/common/Button";
 import moment from "moment";
 import { Message, MessageRequestBody } from "@/types/chat";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiSend } from "react-icons/fi";
 import { MdRefresh } from "react-icons/md";
 import { PiLightningFill, PiStopBold } from "react-icons/pi";
@@ -20,11 +20,21 @@ export default function ChatInput(){
     
     const {state:{messageList,currentModel,streamingId},dispatch} = useAppContext()
 
-    const {publish} = useEventBusContext()
+    const {publish,subscribe,unsubscribe} = useEventBusContext()
 
     const stopRef = useRef(false);
 
     const chatIdRef = useRef("")
+
+    useEffect(()=>{
+        const listener = (prompt:string)=>{
+            setMessageText(prompt ?? "")
+        }
+        subscribe("createNewChat",listener)
+        return ()=>{
+            unsubscribe("createNewChat",listener)
+        }
+    },[])
 
     async function createOrUpdateMessage(message: Message){
         const response = await fetch("/api/message",{
@@ -69,6 +79,7 @@ export default function ChatInput(){
 
         if(!chatIdRef.current){
             chatIdRef.current = message.chatId
+            dispatch({type:ActionType.UPDATE,field:"selectedChat",value:{id:message.chatId}})
             publish('fetchChatList')
         }
 
