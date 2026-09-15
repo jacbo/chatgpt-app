@@ -26,6 +26,7 @@ export default function ChatInput(){
 
     useEffect(()=>{
         const listener = (prompt:string)=>{
+            dispatch({type:ActionType.UPDATE,field:"selectedChat",value:null})
             setMessageText(prompt ?? "")
         }
         subscribe("createNewChat",listener)
@@ -99,7 +100,7 @@ export default function ChatInput(){
                     type: ActionType.REMOVE_MESSAGE,
                     message: messages[messages.length-1]
                 })
-                messages.splice(0,messages.length-1,1)
+                messages.splice(messages.length-1,1)
                 await doSend(messages)
             }else {
                 alert('删除失败')

@@ -32,7 +32,7 @@ export type Action = UpdateAction|MessageAction;
 export const initState: State = {
   displayNavigation: true,
   themeMode: "dark",
-  currentModel: "inclusionai/ling-3.0-flash-vl:free",
+  currentModel: "minicpm-v4.6:1b",
   messageList: [],
   streamingId: "",
   selectedChat: null
@@ -53,7 +53,7 @@ export function reducer(state: State, action: Action): State {
         return {...state, messageList: state.messageList.filter(message => message.id !== action.message.id)}
       }
       default: {
-        throw new Error(`Unhandled action type: ${action.type}`)
+        throw new Error(`Unhandled action type`)
       }
     }
 }

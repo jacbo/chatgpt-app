@@ -1,5 +1,6 @@
 import { useAppContext } from "@/components/AppContext";
 import Button from "@/components/common/Button";
+import { useEventBusContext } from "@/components/EventBusContext";
 import { ActionType } from "@/reducers/AppReducer";
 import { HiPlus } from "react-icons/hi";
 import { LuPanelLeft } from "react-icons/lu";
@@ -10,8 +11,13 @@ export default function Menubar() {
         dispatch
     } = useAppContext()
 
+    const {publish} = useEventBusContext()
+
     return <div className="flex space-x-3">
         <Button
+        onClick={()=>{
+            publish("createNewChat","")
+        }}
         icon={HiPlus}
         variant="outline"
         className="flex-1"
